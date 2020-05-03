@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabs demo</title>
+    <script src="tabbable.js"></script>
+</head>
+<body>
+    <div id="tabBar">
+        <template><div><p>Tab</p></div></template>
+    </div>
+    <div id="tabContent">
+        <template><div></div></template>
+    </div>
+
+    <script>
+        const tc = new tabbable('tabBar', 'tabContent');
+
+        tc.addEventListener('add', (tab, content) => {
+            console.log('tab added', tab, content);
+        });
+
+        tc.addEventListener('select', (tab, content) => {
+            console.log('tab selected', tab, content);
+        });
+
+        tc.addEventListener('remove', () => {
+            console.log('tab removed');
+        });
+        
+        tc.addEventListener('allRemoved', () => {
+            console.log('all tabs removed');
+        });
+    </script>
+</body>
+</html>
