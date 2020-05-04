@@ -17,9 +17,12 @@ The template controls will becore your tab and content items when created.
 
 In your main Js file add the following code.
 ```
-const tc = new tabbable('tabBar', 'tabContent');
+const tc = new tabbable('tabBar', 'tabContent', {});
 ```
-### methods
+### Options
+- showAddBtn - true/false
+
+### Methods
 - tabs - returns a list of tab elements
 - add({opts}) - creates and adds a new tab and content element
 - remove(t_id) - removes tab and content based in passed id
@@ -31,3 +34,7 @@ const tc = new tabbable('tabBar', 'tabContent');
 - add => (newTab, newContent)
 - remove => ()
 - allRemoved => ()
+
+### Styles
+- .tabbable_tabList - div containing all tabs
+- .tabbable_addBtn - tab add button

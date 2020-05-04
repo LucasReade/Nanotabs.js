@@ -1,6 +1,6 @@
 class tabbable {
     events = [];
-    constructor(tabBar_id, tabContent_id) {
+    constructor(tabBar_id, tabContent_id, opts = {}) {
         this.tabBar = document.getElementById(tabBar_id);
         this.tabContent = document.getElementById(tabContent_id);
         this.tabTemplate = this.tabBar.querySelector('template');
@@ -12,23 +12,25 @@ class tabbable {
         this.tabList = document.createElement('div');
         this.tabList.setAttribute('role', 'tablist');
         this.tabList.setAttribute('aria-label', 'Tabs list');
+        this.tabList.classList.add('tabbable_tabList');
         let tabFocus = 0;
         this.tabList.addEventListener('keydown', e => {
+            const tabs = this.tabList.querySelectorAll('[role="tab"]');
             if (e.keyCode === 39 || e.keyCode === 37) {
-                this.tabs[tabFocus].setAttribute('tabindex', -1);
+                tabs[tabFocus].setAttribute('tabindex', -1);
                 if (e.keyCode === 39) {
                     tabFocus++;
-                    if (tabFocus >= this.tabs.length) {
+                    if (tabFocus >= tabs.length) {
                         tabFocus = 0;
                     }
                 } else if (e.keyCode === 37) {
                     tabFocus--;
                     if (tabFocus < 0) {
-                      tabFocus = this.tabs.length - 1;
+                      tabFocus = tabs.length - 1;
                     }
                 }
-                this.tabs[tabFocus].setAttribute("tabindex", 0);
-                this.tabs[tabFocus].focus();
+                tabs[tabFocus].setAttribute("tabindex", 0);
+                tabs[tabFocus].focus();
             }
         });
 
@@ -39,11 +41,18 @@ class tabbable {
             this.add({selected: true});
         });
         addBtn.textContent = '+';
+        addBtn.classList.add('tabbable_addBtn');
 
-        this.tabBar.appendChild(addBtn);
+        if(opts.hasOwnProperty('showAddBtn')){
+            if(opts.showAddBtn){
+                this.tabBar.appendChild(addBtn);
+            }
+        } else {
+            this.tabBar.appendChild(addBtn);
+        } 
     }
-    get tabs() {
-        return this.tabList.querySelectorAll('[role="tab"]');
+    get count() {
+        return this.tabList.querySelectorAll('[role="tab"]').length;
     }
     add(opts = {}) {
         const uId= ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));        
@@ -75,11 +84,17 @@ class tabbable {
         this.select(`t_${uId}`, true);
     }
     remove(t_id) {
+        event.stopPropagation();
         const targetTab = this.tabList.querySelector(`#${t_id}`);
         const targetContent = this.tabContent.querySelector(`[aria-labelledby="${t_id}"]`);
 
         if (targetTab.getAttribute('aria-selected') === 'true') {
             //select next tab
+            if(targetTab.nextSibling){
+                this.select(targetTab.nextSibling.id);
+            } else if (targetTab.previousSibling) {
+                this.select(targetTab.previousSibling.id);
+            }
         }
 
         this.tabList.removeChild(targetTab);
@@ -87,10 +102,15 @@ class tabbable {
 
         this.events.filter(e => e.event === 'remove').forEach(e => e.func());
 
-        if(this.tabs.length === 0) {
+        if(this.count === 0) {
             this.events.filter(e => e.event === 'allRemoved').forEach(e => e.func());
         }
     }
+    /**
+     * 
+     * @param {string} t_id id of the tab you want to select
+     * @param {boolean} muffleEvent send selected event after tab selected?
+     */
     select(t_id, muffleEvent = false) {
         const targetTab = this.tabList.querySelector(`#${t_id}`);
         const targetContent = this.tabContent.querySelector(`[aria-labelledby="${t_id}"]`);

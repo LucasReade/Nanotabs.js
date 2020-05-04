@@ -5,20 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tabs demo</title>
     <script src="tabbable.js"></script>
+    <style>
+        .tab_template{}
+            .tab_template p {}
+
+        /* Tabbable styles */
+        .tabbable_tabList{
+
+        }
+        .tabbable_addBtn{
+
+        }
+    </style>
 </head>
 <body>
     <div id="tabBar">
-        <template><div><p>Tab</p></div></template>
+        <template><div class="tab_template"><span>Tab</span><button class="closeBtn">x</button></div></template>
     </div>
     <div id="tabContent">
         <template><div></div></template>
     </div>
 
     <script>
-        const tc = new tabbable('tabBar', 'tabContent');
+        const tc = new tabbable('tabBar', 'tabContent', {showAddBtn: true});
 
         tc.addEventListener('add', (tab, content) => {
             console.log('tab added', tab, content);
+            tab.querySelector('.closeBtn').addEventListener('click', () => {
+                tc.remove(tab.id);
+            }, false);
         });
 
         tc.addEventListener('select', (tab, content) => {
