@@ -24,27 +24,27 @@
     <div id="tabContent">
         <template><div></div></template>
     </div>
-    
+
     <script src="tabbable.js"></script>
     <script>
         const tc = new tabbable('tabBar', 'tabContent', {showAddBtn: true});
 
-        tc.addEventListener('add', (tab, content) => {
+        tc.addEventListener('tab-add', (tab, content) => {
             console.log('tab added', tab, content);
             tab.querySelector('.closeBtn').addEventListener('click', () => {
                 tc.remove(tab.id);
             }, false);
         });
 
-        tc.addEventListener('select', (tab, content) => {
+        tc.addEventListener('tab-select', (tab, content) => {
             console.log('tab selected', tab, content);
         });
 
-        tc.addEventListener('remove', () => {
+        tc.addEventListener('tab-remove', () => {
             console.log('tab removed');
         });
         
-        tc.addEventListener('allRemoved', () => {
+        tc.addEventListener('tab-allRemoved', () => {
             console.log('all tabs removed');
         });
     </script>

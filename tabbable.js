@@ -51,6 +51,7 @@ class tabbable {
             this.tabBar.appendChild(addBtn);
         } 
     }
+    // == Tab functions ==========================================================
     /**
      * Returns count of current tabs
      */
@@ -86,7 +87,7 @@ class tabbable {
         
         this.tabList.appendChild(newT);
         this.tabContent.appendChild(newC);
-        this.events.filter(e => e.event === 'add').forEach(e => e.func(newTab, newContent));
+        this.events.filter(e => e.event === 'tab-add').forEach(e => e.func(newTab, newContent));
 
         this.select(`t_${uId}`, true);
     }
@@ -111,10 +112,10 @@ class tabbable {
         this.tabList.removeChild(targetTab);
         this.tabContent.removeChild(targetContent);
 
-        this.events.filter(e => e.event === 'remove').forEach(e => e.func());
+        this.events.filter(e => e.event === 'tab-remove').forEach(e => e.func());
 
         if(this.count === 0) {
-            this.events.filter(e => e.event === 'allRemoved').forEach(e => e.func());
+            this.events.filter(e => e.event === 'tab-allRemoved').forEach(e => e.func());
         }
     }
     /**
@@ -133,12 +134,26 @@ class tabbable {
             this.tabContent.querySelectorAll('[role="tabpanel"]').forEach(p => p.setAttribute("hidden", true));
             targetContent.removeAttribute('hidden');
             
-            if (!muffleEvent) this.events.filter(e => e.event === 'select').forEach(e => e.func(targetTab, targetContent));
+            if (!muffleEvent) this.events.filter(e => e.event === 'tab-select').forEach(e => e.func(targetTab, targetContent));
         }
     }
+    // == Group functions ========================================================
+    createGroup(opts = {}) {
+
+    }
+    addTabToGroup() {
+
+    }
+    removeTabFromGroup() {
+
+    }
+    removeGroup() {
+
+    }
+    // == Global event listener ==================================================
     /**
      * 
-     * @param {'select'|'add'|'remove'|'allRemoved'} event name of event
+     * @param {'tab-select'|'tab-add'|'tab-remove'|'tab-allRemoved'} event name of event
      * @param {void} func event function
      */
     addEventListener(event, func){
