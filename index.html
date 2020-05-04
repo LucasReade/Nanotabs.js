@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tabs demo</title>
-    <script src="tabbable.js"></script>
     <style>
         .tab_template{}
             .tab_template p {}
@@ -25,7 +24,8 @@
     <div id="tabContent">
         <template><div></div></template>
     </div>
-
+    
+    <script src="tabbable.js"></script>
     <script>
         const tc = new tabbable('tabBar', 'tabContent', {showAddBtn: true});
 

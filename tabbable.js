@@ -51,9 +51,16 @@ class tabbable {
             this.tabBar.appendChild(addBtn);
         } 
     }
+    /**
+     * Returns count of current tabs
+     */
     get count() {
         return this.tabList.querySelectorAll('[role="tab"]').length;
     }
+    /**
+     * 
+     * @param {Object} opts Options passed to new tab
+     */
     add(opts = {}) {
         const uId= ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));        
         let newT = this.tabTemplate.content.cloneNode(true);
@@ -83,6 +90,10 @@ class tabbable {
 
         this.select(`t_${uId}`, true);
     }
+    /**
+     * 
+     * @param {string} t_id id of tab to remove
+     */
     remove(t_id) {
         event.stopPropagation();
         const targetTab = this.tabList.querySelector(`#${t_id}`);
