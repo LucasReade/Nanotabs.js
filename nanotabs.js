@@ -1,4 +1,4 @@
-class tabbable {
+class NanoTabs {
     events = [];
     constructor(tabBar_id, tabContent_id, opts = {}) {
         this.tabBar = document.getElementById(tabBar_id);
@@ -12,7 +12,7 @@ class tabbable {
         this.tabList = document.createElement('div');
         this.tabList.setAttribute('role', 'tablist');
         this.tabList.setAttribute('aria-label', 'Tabs list');
-        this.tabList.classList.add('tabbable_tabList');
+        this.tabList.classList.add('nanotabs_tabList');
         let tabFocus = 0;
         this.tabList.addEventListener('keydown', e => {
             const tabs = this.tabList.querySelectorAll('[role="tab"]');
@@ -38,10 +38,10 @@ class tabbable {
 
         let addBtn = document.createElement('button');
         addBtn.addEventListener('click', () => {
-            this.add({selected: true});
+            this.addTab({selected: true});
         });
         addBtn.textContent = '+';
-        addBtn.classList.add('tabbable_addBtn');
+        addBtn.classList.add('nanotabs_addBtn');
 
         if(opts.hasOwnProperty('showAddBtn')){
             if(opts.showAddBtn){
@@ -55,14 +55,14 @@ class tabbable {
     /**
      * Returns count of current tabs
      */
-    get count() {
+    get tabcount() {
         return this.tabList.querySelectorAll('[role="tab"]').length;
     }
     /**
      * 
      * @param {Object} opts Options passed to new tab
      */
-    add(opts = {}) {
+    addTab(opts = {}) {
         const uId= ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));        
         let newT = this.tabTemplate.content.cloneNode(true);
         let newC = this.contentTemplate.content.cloneNode(true);
@@ -74,7 +74,7 @@ class tabbable {
         newTab.setAttribute('aria-controls', `c_${uId}`);
         newTab.setAttribute('tabindex', 1);
         newTab.addEventListener('click', (e) => {
-            this.select(`t_${uId}`);
+            this.selectTab(`t_${uId}`);
         });
 
         // new content
@@ -87,15 +87,15 @@ class tabbable {
         
         this.tabList.appendChild(newT);
         this.tabContent.appendChild(newC);
-        this.events.filter(e => e.event === 'tab-add').forEach(e => e.func(newTab, newContent));
+        this.events.filter(e => e.event === 'tab-added').forEach(e => e.func(newTab, newContent));
 
-        this.select(`t_${uId}`, true);
+        this.selectTab(`t_${uId}`, true);
     }
     /**
      * 
      * @param {string} t_id id of tab to remove
      */
-    remove(t_id) {
+    removeTab(t_id) {
         event.stopPropagation();
         const targetTab = this.tabList.querySelector(`#${t_id}`);
         const targetContent = this.tabContent.querySelector(`[aria-labelledby="${t_id}"]`);
@@ -112,7 +112,7 @@ class tabbable {
         this.tabList.removeChild(targetTab);
         this.tabContent.removeChild(targetContent);
 
-        this.events.filter(e => e.event === 'tab-remove').forEach(e => e.func());
+        this.events.filter(e => e.event === 'tab-removed').forEach(e => e.func());
 
         if(this.count === 0) {
             this.events.filter(e => e.event === 'tab-allRemoved').forEach(e => e.func());
@@ -123,7 +123,7 @@ class tabbable {
      * @param {string} t_id id of the tab you want to select
      * @param {boolean} muffleEvent send selected event after tab selected?
      */
-    select(t_id, muffleEvent = false) {
+    selectTab(t_id, muffleEvent = false) {
         const targetTab = this.tabList.querySelector(`#${t_id}`);
         const targetContent = this.tabContent.querySelector(`[aria-labelledby="${t_id}"]`);
 
@@ -134,26 +134,54 @@ class tabbable {
             this.tabContent.querySelectorAll('[role="tabpanel"]').forEach(p => p.setAttribute("hidden", true));
             targetContent.removeAttribute('hidden');
             
-            if (!muffleEvent) this.events.filter(e => e.event === 'tab-select').forEach(e => e.func(targetTab, targetContent));
+            if (!muffleEvent) this.events.filter(e => e.event === 'tab-selected').forEach(e => e.func(targetTab, targetContent));
         }
     }
     // == Group functions ========================================================
-    createGroup(opts = {}) {
+    addGroup(opts = {}) {
+        const uId= ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));  
+        const groupOuterTemplate = document.createElement('details');
+        const groupBadgeTemplate = document.createElement('summary');
+        const groupInnerTemplate = document.createElement('div');
+
+        groupOuterTemplate.id = `g_${uId}`;
+        groupOuterTemplate.classList.add('nanotabs_group');
+
+        groupBadgeTemplate.classList.add('nanotabs_groupbadge');
+        if(opts.hasOwnProperty('name')){ 
+            groupBadgeTemplate.textContent = opts.name;
+        } else {
+            groupBadgeTemplate.textContent = 'New group';
+        }
+
+        groupOuterTemplate.appendChild(groupBadgeTemplate);
+        groupOuterTemplate.appendChild(groupInnerTemplate);
+
+        this.tabList.appendChild(groupOuterTemplate);
+        this.events.filter(e => e.event === 'group-added').forEach(e => e.func());
+    }
+    removeGroup(g_id) {
+        event.stopPropagation();
+        const targetGroup = this.tabList.querySelector(`#${g_id}`);
+        const groupTabs = targetGroup.querySelectorAll('div > [role="tab"]');
+
+        if(groupTabs.length > 0) {
+
+        }
+
+        this.tabList.removeChild(targetGroup);
+        this.events.filter(e => e.event === 'group-removed').forEach(e => e.func());
+    }
+    addTabToGroup(g_id, t_id) {
 
     }
-    addTabToGroup() {
+    removeTabFromGroup(g_id, t_id) {
 
     }
-    removeTabFromGroup() {
-
-    }
-    removeGroup() {
-
-    }
-    // == Global event listener ==================================================
+    // == Global functions ==================================================
     /**
      * 
-     * @param {'tab-select'|'tab-add'|'tab-remove'|'tab-allRemoved'} event name of event
+     * @param {'tab-selected'|'tab-added'|'tab-removed'|'tab-allRemoved'|'group-added'|'group-removed'} event name of event
      * @param {void} func event function
      */
     addEventListener(event, func){

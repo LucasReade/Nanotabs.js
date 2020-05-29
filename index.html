@@ -9,10 +9,10 @@
             .tab_template p {}
 
         /* Tabbable styles */
-        .tabbable_tabList{
+        .nanotabs_tabList{
 
         }
-        .tabbable_addBtn{
+        .nanotabs_addBtn{
 
         }
     </style>
@@ -25,22 +25,22 @@
         <template><div></div></template>
     </div>
 
-    <script src="tabbable.js"></script>
+    <script src="nanotabs.js"></script>
     <script>
-        const tc = new tabbable('tabBar', 'tabContent', {showAddBtn: true});
+        const tc = new NanoTabs('tabBar', 'tabContent', {showAddBtn: true});
 
-        tc.addEventListener('tab-add', (tab, content) => {
+        tc.addEventListener('tab-added', (tab, content) => {
             console.log('tab added', tab, content);
             tab.querySelector('.closeBtn').addEventListener('click', () => {
-                tc.remove(tab.id);
+                tc.removeTab(tab.id);
             }, false);
         });
 
-        tc.addEventListener('tab-select', (tab, content) => {
+        tc.addEventListener('tab-selected', (tab, content) => {
             console.log('tab selected', tab, content);
         });
 
-        tc.addEventListener('tab-remove', () => {
+        tc.addEventListener('tab-removed', () => {
             console.log('tab removed');
         });
         

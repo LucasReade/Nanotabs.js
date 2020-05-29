@@ -1,9 +1,9 @@
-# tabbable.js
-Simple extendable tab contorl in pure javascript
+# Nanotabs.js
+Its nano tech. You like it?
 
 ## Set up
 
-Setup a basic script tag with a src to the tabble.js file and in your html file add a version of the following code.
+Setup a basic script tag with a src to the nanotabs.js file and in your html file add a version of the following code.
 ```
 <div id="tabBar">
     <template><div><p>Tab</p></div></template>
@@ -17,33 +17,40 @@ The template controls will becore your tab and content items when created.
 
 In your main Js file add the following code.
 ```
-const tc = new tabbable('tabBar', 'tabContent', {});
+const tc = new NanoTabs('tabBar', 'tabContent', {});
 ```
-### Options
-- ``showAddBtn`` - true/false
+### Constructor
+- ``tabBar_id`` - String 
+- ``tabContent_id`` - String
+- ``Options`` - Object (optional)
+    - ``showAddBtn`` - true/false
+
+### Properties
+- ```tabcount``` - returns a count of tab elements
 
 ### Methods
-- ```count``` - returns a count of tab elements
-- ```add({opts})``` - creates and adds a new tab and content element
-- ```remove(t_id)``` - removes tab and content based in passed id
-- ```select(t_id)``` - selects tab and content based in passed id
+- ```addTab({opts})``` - creates and adds a new tab and content element
+- ```removeTab(t_id)``` - removes tab and content based in passed id
+- ```selectTab(t_id)``` - selects tab and content based in passed id
 ---
-- ```createGroup({opts})``` - WIP
+- ```addGroup({opts})``` - WIP
 - ```addTabToGroup(t_id, g_id)``` - WIP
 - ```removeTabFromGroup(t_id, g_id)``` - WIP
 - ```removeGroup(g_id)``` - WIP
 ---
-- ```addEventListener(event, void)``` - creates event listener
+- ```addEventListener(event, void)``` - creates event listener (see events)
 
-### Events listeners
+### Events
 - ```tab-select``` => (selectedTab, selectedContent)
-- ```tab-add``` => (newTab, newContent)
-- ```tab-remove``` => ()
+- ```tab-added``` => (newTab, newContent)
+- ```tab-removed``` => ()
 - ```tab-allRemoved``` => ()
 ---
-- ```group-add``` => WIP
-- ```group-remove``` => WIP
+- ```group-added``` => WIP
+- ```group-removed``` => WIP
 
 ### Styles
-- ```.tabbable_tabList``` - div containing all tabs
-- ```.tabbable_addBtn``` - tab add button
+- ```.nanotabs_tabList``` - div containing all tabs
+- ```.nanotabs_addBtn``` - tab add button
+- ```.nanotabs_group``` - group container
+- ```.nanotabs_groupbadge``` - group badge title
