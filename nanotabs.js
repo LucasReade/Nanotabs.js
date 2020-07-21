@@ -103,9 +103,9 @@ class NanoTabs {
         if (targetTab.getAttribute('aria-selected') === 'true') {
             //select next tab
             if(targetTab.nextSibling){
-                this.select(targetTab.nextSibling.id);
+                this.selectTab(targetTab.nextSibling.id);
             } else if (targetTab.previousSibling) {
-                this.select(targetTab.previousSibling.id);
+                this.selectTab(targetTab.previousSibling.id);
             }
         }
 
@@ -139,7 +139,9 @@ class NanoTabs {
     }
     // == Group functions ========================================================
     addGroup(opts = {}) {
-        const uId= ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));  
+        const uId= ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)); 
+        const groupColor = (() => { var letters = '0123456789ABCDEF'; var color = '#'; for (var i = 0; i < 6; i++) { color += letters[Math.floor(Math.random() * 16)]; } return color; });
+        const thisGroupColor = groupColor();
         const groupOuterTemplate = document.createElement('details');
         const groupBadgeTemplate = document.createElement('summary');
         const groupInnerTemplate = document.createElement('div');
@@ -148,11 +150,15 @@ class NanoTabs {
         groupOuterTemplate.classList.add('nanotabs_group');
 
         groupBadgeTemplate.classList.add('nanotabs_groupbadge');
+        groupBadgeTemplate.style.background = thisGroupColor;
         if(opts.hasOwnProperty('name')){ 
             groupBadgeTemplate.textContent = opts.name;
         } else {
             groupBadgeTemplate.textContent = 'New group';
         }
+
+        groupInnerTemplate.style.borderColor = thisGroupColor;
+        groupInnerTemplate.classList.add('nanotabs_groupcontainer');
 
         groupOuterTemplate.appendChild(groupBadgeTemplate);
         groupOuterTemplate.appendChild(groupInnerTemplate);

@@ -19,12 +19,28 @@
 
 .tab_template{
     margin: 5px;
+    padding: 5px;
     border-radius: 5px;
+    background-color: #efefef;
+    display: flex;
+    outline: none;
 }
-    .tab_template p {
-        
+    .tab_template span {
+        flex: auto;
     }
-
+    .tab_template .closeBtn {
+        border: none;
+        border-radius: 50%;
+        outline: none;
+        background-color: transparent;
+    }
+        .tab_template .closeBtn:hover {
+            background-color: tomato;
+            color: #fff;
+        }
+.tab_template[aria-selected='true'] {
+    background-color: lightsteelblue;
+}
 
 /* Nanotabs styles */
 .nanotabs_tabList{
@@ -38,3 +54,19 @@
     border: none;
     outline: none;
 }
+
+.nanotabs_group {
+    
+}   
+    .nanotabs_group .nanotabs_groupbadge::-webkit-details-marker { display:none }
+    .nanotabs_group .nanotabs_groupbadge {
+        outline: none;
+        margin: 5px;
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+    .nanotabs_group .nanotabs_groupcontainer {
+        margin: 5px;
+        border-left: 5px solid;
+    }
